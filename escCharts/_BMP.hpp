@@ -51,6 +51,11 @@ namespace _BMP
         RGBColor(uint8_t _r, uint8_t _g, uint8_t _b);
         void SetColor(uint8_t _r, uint8_t _g, uint8_t _b);
 
+    	bool IsEmpty()
+    	{
+            return (r && g && b);
+    	}
+
         uint8_t r;
         uint8_t g;
         uint8_t b;
@@ -81,7 +86,10 @@ namespace _BMP
     	
         void SetPixel(int64_t x, int64_t y, const RGBColor& color, bool ignore_err);
         void DrawLine(int64_t x0, int64_t y0, int64_t x1, int64_t y1, const RGBColor& color);
-        void DrawCircle(int64_t x0, int64_t y0, int64_t r, const RGBColor& color, bool fill, int64_t outlineWidth);
+        void DrawCircle(int64_t x0, int64_t y0, int64_t r, const RGBColor& outlineColor, int64_t outlineWidth, bool fill, const RGBColor& fillColor);
+        void FillCircle(int64_t x0, int64_t y0, int64_t r, const RGBColor& fillColor);
+        void DrawRectangle(int64_t x1, int64_t y1, int64_t x2, int64_t y2, const RGBColor& outlineColor, int64_t outlineWidth, bool fill, const RGBColor& fillColor);
+        void FillRectangle(int64_t x1, int64_t y1, int64_t x2, int64_t y2, const RGBColor& fillColor);
     	
         void SetFileName(const string& _outFileName);
     	
@@ -90,6 +98,10 @@ namespace _BMP
     	
         inline int64_t w() const { return width; }
         inline int64_t h() const { return height; }
+
+        inline RGBColor GetBGColor() {
+            return this->backgroundColor;
+        }
 
     private:
         void Init(int64_t _width, int64_t _height);
@@ -102,6 +114,7 @@ namespace _BMP
         int64_t height;
         ofstream outFile;
         string outFileName;
+    public:
         RGBColor backgroundColor;
         RGBColor** buffer;
     };
@@ -245,24 +258,31 @@ namespace _BMP
         }
     }
 
-    void Image::DrawCircle(int64_t x0, int64_t y0, int64_t r, const RGBColor& color, bool fill = false, int64_t outlineWidth = 1)
+    void Image::DrawCircle(int64_t x0, int64_t y0, int64_t r, const RGBColor& outlineColor, int64_t outlineWidth = 1, bool fill = false, const RGBColor& fillColor = COLOR_WHITE)
     {
         assert(x0 >= 0 and y0 >= 0 and x0 < width and y0 < height);
-
-        if (fill) {
-            int64_t sq_r = r * r;
-            for (int64_t dx = -r; dx <= r; ++dx) {
-                for (int64_t dy = -r; dy <= r; ++dy) {
-                    int64_t sq_dist = dx * dx + dy * dy;
-                    if (sq_dist <= sq_r) {
-                        int64_t x = x0 + dx;
-                        int64_t y = y0 + dy;
-                        SetPixel(x, y, color, true);
-                    }
+        assert(outlineWidth > 0);
+       
+        int64_t sq_r = r * r;
+        for (int64_t dx = -r; dx <= r; ++dx) {
+            for (int64_t dy = -r; dy <= r; ++dy) {
+                int64_t sq_dist = dx * dx + dy * dy;
+                if (sq_dist <= sq_r) {
+                    int64_t x = x0 + dx;
+                    int64_t y = y0 + dy;
+                    if (outlineWidth > 1)
+                        SetPixel(x, y, outlineColor, true);
+                    else
+                        SetPixel(x, y, fillColor, true);
                 }
             }
         }
-        else {
+        if (outlineWidth > 1)
+        {
+            DrawCircle(x0, y0, r - outlineWidth, outlineColor, 1, fill, fillColor);
+        }
+        
+        /*else {
             int64_t x = r - 1;
             int64_t y = 0;
             int64_t dx = 1;
@@ -270,14 +290,17 @@ namespace _BMP
             int64_t err = dx - (r << 1);
 
             while (x >= y) {
-                SetPixel(x0 + x, y0 + y, color, true);
-                SetPixel(x0 + y, y0 + x, color, true);
-                SetPixel(x0 - y, y0 + x, color, true);
-                SetPixel(x0 - x, y0 + y, color, true);
-                SetPixel(x0 - x, y0 - y, color, true);
-                SetPixel(x0 - y, y0 - x, color, true);
-                SetPixel(x0 + y, y0 - x, color, true);
-                SetPixel(x0 + x, y0 - y, color, true);
+                SetPixel(x0 + x, y0 + y, outlineColor, true);
+                SetPixel(x0 + y, y0 + x, outlineColor, true);
+
+                SetPixel(x0 - y, y0 + x, outlineColor, true);
+                SetPixel(x0 - x, y0 + y, outlineColor, true);
+
+                SetPixel(x0 - x, y0 - y, outlineColor, true);
+                SetPixel(x0 - y, y0 - x, outlineColor, true);
+
+                SetPixel(x0 + y, y0 - x, outlineColor, true);
+                SetPixel(x0 + x, y0 - y, outlineColor, true);
 
                 if (err <= 0) {
                     y++;
@@ -292,8 +315,72 @@ namespace _BMP
                 }
             }
         }
+       /* if (fill)
+        {
+            FillCircle(x0, y0, r, fillColor);
+            DrawCircle(x0, y0, r, outlineColor, outlineWidth, false, fillColor);
+        }
+    	
+        
+    	if(outlineWidth > 1)
+        {
+            DrawCircle(x0, y0, r - outlineWidth, outlineColor, outlineWidth - 1, fill, fillColor);
+        }
+    	*/
     }
 
+    void Image::FillCircle(int64_t x0, int64_t y0, int64_t r, const RGBColor& fillColor)
+    {
+        int64_t sq_r = r * r;
+        for (int64_t dx = -r; dx <= r; ++dx) {
+            for (int64_t dy = -r; dy <= r; ++dy) {
+                int64_t sq_dist = dx * dx + dy * dy;
+                if (sq_dist <= sq_r) {
+                    int64_t x = x0 + dx;
+                    int64_t y = y0 + dy;
+                    SetPixel(x, y, fillColor, true);
+                }
+            }
+        }
+    }
+
+    void Image::DrawRectangle(int64_t x1, int64_t y1, int64_t x2, int64_t y2, const RGBColor& outlineColor, int64_t outlineWidth = 1, bool fill = false, const RGBColor& fillColor = COLOR_WHITE)
+    {
+        assert(x1 >= 0 and y1 >= 0 and x1 < width and y1 < height);
+        assert(x2 >= 0 and y2 >= 0 and x2 < width and y2 < height);
+        assert(outlineWidth > 0);
+
+        if(fill)
+        {
+            FillRectangle(x1, y1, x2, y2, fillColor);
+        }
+    	
+	    DrawLine(x1, y1, x2, y1, outlineColor);
+	    DrawLine(x2, y1, x2, y2, outlineColor);
+	    DrawLine(x2, y2, x1, y2, outlineColor);
+	    DrawLine(x1, y2, x1, y1, outlineColor);
+
+        if (outlineWidth > 1) {
+            DrawRectangle(x1+1, y1+1, x2 - 1, y2 - 1, outlineColor, outlineWidth - 1, fill, fillColor);
+        }
+    	
+    }
+	
+    void Image::FillRectangle(int64_t x1, int64_t y1, int64_t x2, int64_t y2, const RGBColor& fillColor)
+    {
+	    while(x1 < x2 && y1  != y2)
+	    {
+            DrawLine(x1, y1, x2, y1, fillColor);
+            DrawLine(x2, y1, x2, y2, fillColor);
+            DrawLine(x2, y2, x1, y2, fillColor);
+            DrawLine(x1, y2, x1, y1, fillColor);
+
+	    	x1++; x2--;
+            y1++; y2--;
+	    }
+
+    }
+	
     void Image::SetFileName(const string& _outFileName)
     {
         assert(_outFileName.size() > 0);

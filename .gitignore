@@ -2,3 +2,7 @@
 .opendb
 .vs/escCharts/v16/Browse.VC.db
 .vs/escCharts/v16/Browse.VC.opendb
+.idb
+.exe
+.ilk
+.pdb
