@@ -85,9 +85,13 @@ namespace _BMP
         Image(int64_t _width, int64_t _height, const string& _outFileName, const RGBColor& _backgroundColor);
     	
         void SetPixel(int64_t x, int64_t y, const RGBColor& color, bool ignore_err);
+    	
         void DrawLine(int64_t x0, int64_t y0, int64_t x1, int64_t y1, const RGBColor& color);
+        void DrawBezier(int64_t x1, int64_t y1, int64_t x2, int64_t y2, int64_t x3, int64_t y3, const RGBColor& color);
+    	
         void DrawCircle(int64_t x0, int64_t y0, int64_t r, const RGBColor& outlineColor, int64_t outlineWidth, bool fill, const RGBColor& fillColor);
         void FillCircle(int64_t x0, int64_t y0, int64_t r, const RGBColor& fillColor);
+    	
         void DrawRectangle(int64_t x1, int64_t y1, int64_t x2, int64_t y2, const RGBColor& outlineColor, int64_t outlineWidth, bool fill, const RGBColor& fillColor);
         void FillRectangle(int64_t x1, int64_t y1, int64_t x2, int64_t y2, const RGBColor& fillColor);
     	
@@ -216,6 +220,47 @@ namespace _BMP
         }
     }
 
+    void Image::DrawBezier(int64_t x1, int64_t y1, int64_t x2, int64_t y2, int64_t x3, int64_t y3, const RGBColor& color)
+    {
+	    /*
+	     * int getPt( int n1 , int n2 , float perc )
+			{
+			    int diff = n2 - n1;
+
+			    return n1 + ( (n2 - n1) * perc );
+			}    
+
+			for( float i = 0 ; i < 1 ; i += 0.01 )
+			{
+			    // The Green Line
+			    xa = getPt( x1 , x2 , i );
+			    ya = getPt( y1 , y2 , i );
+			    xb = getPt( x2 , x3 , i );
+			    yb = getPt( y2 , y3 , i );
+
+			    // The Black Dot
+			    x = getPt( xa , xb , i );
+			    y = getPt( ya , yb , i );
+
+			    drawPixel( x , y , COLOR_RED );
+			}
+	     */
+        float xa, ya, xb, yb, x, y;
+        for (float i = 0; i < 1; i += 0.01)
+        {
+            xa = x1 + ((x2 - x1) * i);
+            ya = y1 + ((y2 - y1) * i);
+            xb = x2 + ((x3 - x2) * i);
+            yb = y2 + ((y3 - y2) * i);
+            
+            // The Black Dot
+            x = xa + ((xb - xa) * i);
+            y = ya + ((yb - ya) * i);
+
+            SetPixel(x, y, color);
+        }
+    }
+	
     void Image::DrawLineLow(int64_t x0, int64_t y0, int64_t x1, int64_t y1, const RGBColor& color)
     {
         int64_t dx = x1 - x0;

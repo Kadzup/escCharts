@@ -1,7 +1,10 @@
 ﻿  escCharts.cpp
 E:\Programming\CPP\escCharts\escCharts\BMP.h(70,1): warning C4267: =: преобразование из "size_t" в "uint32_t"; возможна потеря данных
-E:\Programming\CPP\escCharts\escCharts\_BMP.hpp(416,49): warning C4244: =: преобразование "int64_t" в "int", возможна потеря данных
-E:\Programming\CPP\escCharts\escCharts\_BMP.hpp(425,22): warning C4244: =: преобразование "int64_t" в "unsigned int", возможна потеря данных
-E:\Programming\CPP\escCharts\escCharts\_BMP.hpp(426,22): warning C4244: =: преобразование "int64_t" в "unsigned int", возможна потеря данных
-E:\Programming\CPP\escCharts\escCharts\_BMP.hpp(468,17): warning C4101: colorBuffer: неиспользованная локальная переменная
+E:\Programming\CPP\escCharts\escCharts\_BMP.hpp(249,43): warning C4305: +=: усечение из "double" в "float"
+E:\Programming\CPP\escCharts\escCharts\_BMP.hpp(260,25): warning C4244: аргумент: преобразование "float" в "int64_t", возможна потеря данных
+E:\Programming\CPP\escCharts\escCharts\_BMP.hpp(260,22): warning C4244: аргумент: преобразование "float" в "int64_t", возможна потеря данных
+E:\Programming\CPP\escCharts\escCharts\_BMP.hpp(461,49): warning C4244: =: преобразование "int64_t" в "int", возможна потеря данных
+E:\Programming\CPP\escCharts\escCharts\_BMP.hpp(470,22): warning C4244: =: преобразование "int64_t" в "unsigned int", возможна потеря данных
+E:\Programming\CPP\escCharts\escCharts\_BMP.hpp(471,22): warning C4244: =: преобразование "int64_t" в "unsigned int", возможна потеря данных
+E:\Programming\CPP\escCharts\escCharts\_BMP.hpp(513,17): warning C4101: colorBuffer: неиспользованная локальная переменная
   escCharts.vcxproj -> E:\Programming\CPP\escCharts\x64\Debug\escCharts.exe
