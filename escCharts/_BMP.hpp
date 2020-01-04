@@ -222,29 +222,6 @@ namespace _BMP
 
     void Image::DrawBezier(int64_t x1, int64_t y1, int64_t x2, int64_t y2, int64_t x3, int64_t y3, const RGBColor& color)
     {
-	    /*
-	     * int getPt( int n1 , int n2 , float perc )
-			{
-			    int diff = n2 - n1;
-
-			    return n1 + ( (n2 - n1) * perc );
-			}    
-
-			for( float i = 0 ; i < 1 ; i += 0.01 )
-			{
-			    // The Green Line
-			    xa = getPt( x1 , x2 , i );
-			    ya = getPt( y1 , y2 , i );
-			    xb = getPt( x2 , x3 , i );
-			    yb = getPt( y2 , y3 , i );
-
-			    // The Black Dot
-			    x = getPt( xa , xb , i );
-			    y = getPt( ya , yb , i );
-
-			    drawPixel( x , y , COLOR_RED );
-			}
-	     */
         float xa, ya, xb, yb, x, y;
         for (float i = 0; i < 1; i += 0.01)
         {
@@ -254,10 +231,10 @@ namespace _BMP
             yb = y2 + ((y3 - y2) * i);
             
             // The Black Dot
-            x = xa + ((xb - xa) * i);
-            y = ya + ((yb - ya) * i);
+            x = ceil(xa) + ceil((xb - xa) * i);
+            y = ceil(ya) + ceil((yb - ya) * i);
 
-            SetPixel(x, y, color);
+            SetPixel(ceil(x), ceil(y), color);
         }
     }
 	

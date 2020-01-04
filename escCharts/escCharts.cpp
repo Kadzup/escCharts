@@ -19,6 +19,7 @@ int main()
     img.DrawCircle(x, y, radius, COLOR_BLACK, 5, true, COLOR_CYAN);
     img.DrawRectangle(30, 30, 200, 200, COLOR_BLUE, 5, true, COLOR_YELLOW);
     img.DrawBezier(10, 300, 50, 100, 100, 400, COLOR_GREEN);
+    img.DrawBezier(10, 290, 50, 90, 100, 390, COLOR_BLACK);
     img.Write();
     return 0;
 }
