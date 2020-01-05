@@ -23,6 +23,8 @@
 #define COLOR_PINK RGBColor{255, 102, 178}
 #define COLOR_GREY RGBColor{96, 96, 96}
 #define COLOR_BROWN RGBColor{51, 25, 0}
+#define COLOR_FRAME_LIGHT RGBColor{153, 204, 255}
+#define COLOR_FRAME_DARK RGBColor{226, 226, 226}
 
 namespace _BMP
 {
@@ -32,15 +34,20 @@ namespace _BMP
     using std::uint8_t;
     using std::ofstream;
 
-    struct point
+    struct Point
     {
-        double x, y;
-        point(double _x, double _y) : x(_x), y(_y) { }
-        double distanceTo(const point& o) {
-            double dx = (x - o.x);
-            double dy = (y - o.y);
+        int64_t x, y;
+    	
+        Point(int64_t _x, int64_t _y) : x(_x), y(_y) { }
+        Point() : x(NULL), y(NULL) { }
+    	
+        double distanceTo(const Point& o) {
+            int64_t dx = (x - o.x);
+            int64_t dy = (y - o.y);
             return sqrt(dx * dx + dy * dy);
         }
+
+        inline bool operator > (const Point& rhs) { return (this->x > rhs.x)&&(this->y > rhs.y); }
     };
 	
     class RGBColor
@@ -56,6 +63,8 @@ namespace _BMP
             return (r && g && b);
     	}
 
+        inline bool operator == (const RGBColor& in) { return (r == in.r) && (g == in.g) && (b == in.b); }
+    	
         uint8_t r;
         uint8_t g;
         uint8_t b;
@@ -73,7 +82,9 @@ namespace _BMP
         b = _b;
     }
 
-
+    /*
+     * Image object with graphical functions
+     */
     class Image
     {
     public:
@@ -83,6 +94,7 @@ namespace _BMP
         Image(int64_t _width, int64_t _height, const string& _outFileName);
         Image(int64_t _width, int64_t _height, const RGBColor& _backgroundColor);
         Image(int64_t _width, int64_t _height, const string& _outFileName, const RGBColor& _backgroundColor);
+        Image(const Image& _image);
     	
         void SetPixel(int64_t x, int64_t y, const RGBColor& color, bool ignore_err);
     	
@@ -107,6 +119,20 @@ namespace _BMP
             return this->backgroundColor;
         }
 
+        Image& operator = (const Image& img)
+        {
+            if (this == &img) {
+                return *this;
+            }
+            this->width = img.width;
+            this->height = img.height;
+            this->buffer = img.buffer;
+            this->outFileName = img.outFileName;
+            this->backgroundColor = img.backgroundColor;
+
+            return *this;
+        }
+    	
     private:
         void Init(int64_t _width, int64_t _height);
         void Setup();
@@ -118,9 +144,10 @@ namespace _BMP
         int64_t height;
         ofstream outFile;
         string outFileName;
+        RGBColor** buffer;
+    	
     public:
         RGBColor backgroundColor;
-        RGBColor** buffer;
     };
 
     // Free and close used classes
@@ -134,7 +161,14 @@ namespace _BMP
             buffer = NULL;
         }
     }
-
+    Image::Image(const Image& _image)
+    {
+        Init(_image.width, _image.height);
+        SetFileName(_image.outFileName);
+        backgroundColor = _image.backgroundColor;
+        Setup();
+    }
+	
     Image::Image(int64_t _width, int64_t _height)
     {
         Init(_width, _height);

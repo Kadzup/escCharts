@@ -1,9 +1,11 @@
 ﻿#include "BMP.h"
+#include "GraphicalChartsDS.hpp"
 #include "_BMP.hpp"
 #include <vector>
 
 using namespace  std;
 using namespace _BMP;
+using namespace _GraphicalCharts;
 
 int main()
 {
@@ -13,13 +15,13 @@ int main()
 	
     string pathName = "out/";
 	
-    // sizeX, sizeY, FileName, BackgroundColor
-    _BMP::Image img(500, 500, pathName + "sample1.bmp", COLOR_WHITE);
+    Image img(500, 500, pathName + "sample1.bmp", COLOR_BLACK);
+	
+	Charts chart(img);
 
-    img.DrawCircle(x, y, radius, COLOR_BLACK, 5, true, COLOR_CYAN);
-    img.DrawRectangle(30, 30, 200, 200, COLOR_BLUE, 5, true, COLOR_YELLOW);
-    img.DrawBezier(10, 300, 50, 100, 100, 400, COLOR_GREEN);
-    img.DrawBezier(10, 290, 50, 90, 100, 390, COLOR_BLACK);
-    img.Write();
+	chart.DisplayFrame(true);
+
+	chart.img.Write();
+	
     return 0;
 }
