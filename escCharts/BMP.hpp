@@ -64,6 +64,7 @@ namespace _BMP
     	}
 
         inline bool operator == (const RGBColor& in) { return (r == in.r) && (g == in.g) && (b == in.b); }
+        inline bool operator != (const RGBColor& in) { return (r != in.r) || (g != in.g) || (b != in.b); }
     	
         uint8_t r;
         uint8_t g;

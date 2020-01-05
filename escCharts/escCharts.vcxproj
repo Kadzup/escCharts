@@ -147,13 +147,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="BMP.cpp" />
     <ClCompile Include="escCharts.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="BMP.h" />
     <ClInclude Include="GraphicalChartsDS.hpp" />
-    <ClInclude Include="_BMP.hpp" />
+    <ClInclude Include="BMP.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

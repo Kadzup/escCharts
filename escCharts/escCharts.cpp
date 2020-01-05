@@ -1,6 +1,5 @@
-﻿#include "BMP.h"
-#include "GraphicalChartsDS.hpp"
-#include "_BMP.hpp"
+﻿#include "GraphicalChartsDS.hpp"
+#include "BMP.hpp"
 #include <vector>
 
 using namespace  std;
@@ -9,19 +8,21 @@ using namespace _GraphicalCharts;
 
 int main()
 {
-    int radius = 250/2,
-		x = 256,
-		y = 256;
-	
+	std::vector<DataNode> node;
+	DataNode n = { "test", 5, {100,0,68} };
+	n.GenerateColor();
+	node.push_back(n);
     string pathName = "out/";
 	
-    Image img(500, 500, pathName + "sample1.bmp", COLOR_BLACK);
+    Image img(720, 480, pathName + "sample1.bmp", COLOR_BLACK);
 	
 	Charts chart(img);
 
-	chart.DisplayFrame(true);
-
-	chart.img.Write();
+	chart.ShowFrame();
+	chart.ShowFrameCorners();
+	chart.BuildTowers(node);
+	
+	chart.Update();
 	
     return 0;
 }
