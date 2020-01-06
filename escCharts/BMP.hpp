@@ -46,7 +46,10 @@ namespace _BMP
             int64_t dy = (y - o.y);
             return sqrt(dx * dx + dy * dy);
         }
-
+    	
+        inline Point operator + (const Point& rObj) { return Point{ x + rObj.x, y + rObj.y }; }
+        inline Point operator - (const Point& rObj) { return Point{ x - rObj.x, y - rObj.y }; }
+        inline Point operator / (double value) { return Point{ int64_t(ceil(x / value)), int64_t(ceil(y / value)) }; }
         inline bool operator > (const Point& rhs) { return (this->x > rhs.x)&&(this->y > rhs.y); }
     };
 	
@@ -109,6 +112,9 @@ namespace _BMP
         void FillRectangle(int64_t x1, int64_t y1, int64_t x2, int64_t y2, const RGBColor& fillColor);
     	
         void SetFileName(const string& _outFileName);
+
+        void ConvertToPPM();
+        void VerticalFlip(int64_t width, int64_t height, unsigned char* ucmat);
     	
         void Write(const string& _outFileName);
         void Write();

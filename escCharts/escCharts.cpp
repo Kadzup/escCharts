@@ -9,9 +9,17 @@ using namespace _GraphicalCharts;
 int main()
 {
 	std::vector<DataNode> node;
-	DataNode n = { "test", 5, {100,0,68} };
+	DataNode n = DataNode{ "test", 5, {100,0,68},10 };
 	n.GenerateColor();
 	node.push_back(n);
+	node.push_back(DataNode{ "test", 5, {100,0,68}, 5 });
+	node.push_back(DataNode{ "test", 5, {100,0,68}, 6 });
+	node.push_back(DataNode{ "test", 5, {100,0,68},4 });
+	node.push_back(DataNode{ "test", 5, {100,0,68},15 });
+	node.push_back(DataNode{ "test", 5, {100,0,68}, 13 });
+	node.push_back(DataNode{ "test", 5, {100,0,68}, 7 });
+	node.push_back(DataNode{ "test", 5, {100,0,68}, 22 });
+	node.push_back(DataNode{ "test", 5, {100,0,68}, 18 });
     string pathName = "out/";
 	
     Image img(720, 480, pathName + "sample1.bmp", COLOR_BLACK);
@@ -20,7 +28,9 @@ int main()
 
 	chart.ShowFrame();
 	chart.ShowFrameCorners();
-	chart.BuildTowers(node);
+	chart.DrawLineChart(node);
+	chart.ShowFrame();
+	chart.ShowFrameCorners();
 	
 	chart.Update();
 	
