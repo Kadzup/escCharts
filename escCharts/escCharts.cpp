@@ -22,17 +22,21 @@ int main()
 	node.push_back(DataNode{ "test", 5, {100,0,68}, 18 });
     string pathName = "out/";
 	
-    Image img(720, 480, pathName + "sample1.bmp", COLOR_BLACK);
+    Image img(720, 480, pathName + "sample1.bmp", COLOR_WHITE);
+    Image img2(720, 480, pathName + "sample2.bmp", COLOR_BLACK);
 	
 	Charts chart(img);
+	Charts chart2(img2);
 
 	chart.ShowFrame();
 	chart.ShowFrameCorners();
-	chart.DrawLineChart(node);
+	chart.DrawTowerChart(node);
+	chart2.DrawLineChart(node);
 	chart.ShowFrame();
 	chart.ShowFrameCorners();
 	
 	chart.Update();
+	chart2.Update();
 	
     return 0;
 }

@@ -208,14 +208,15 @@ namespace _GraphicalCharts
     	
     private:
         std::vector<int64_t> data;
+        void DrawTower(const Point& Top, const int64_t& containerWidth, int64_t spacing);
+        void DrawRectangleByLines(const Point& TopLeft, const Point& BottomRight, const RGBColor& outlineColor);
+        int64_t GetPositionByPercent(const double& value, const int64_t& maxHeight);
     	
     public:
         void ShowFrame(const bool& show);
         void ShowFrameCorners(const bool& show);
-
-        void BuildTowers(const std::vector<DataNode>& data_nodes);
-        void DrawRectangleByLines(const Point& TopLeft, const Point& BottomRight, const RGBColor& outlineColor);
-        int64_t GetPositionByPercent(const double& value, const int64_t& maxHeight);
+    	
+        void DrawTowerChart(const std::vector<DataNode>& data_nodes);
         void DrawLineChart(const std::vector<DataNode>& data_nodes);
     	
         inline Image GetImage() { return this->img; }
@@ -283,20 +284,34 @@ namespace _GraphicalCharts
         }
     }
 
-    void Charts::BuildTowers(const std::vector<DataNode>& data_nodes)
+    void Charts::DrawTower(const Point& Top, const int64_t& containerWidth, int64_t spacing = 5)
+    {
+        assert(Top.x >= 0 and Top.y >= 0 and Top.x < img.w() and Top.y < img.h());
+        assert(containerWidth > 0);
+    	
+        img.DrawLine(Top.x - ((containerWidth - spacing) / 2) - 1, Top.y, Top.x + ((containerWidth - spacing) / 2) - 1, Top.y, COLOR_BLUE);
+        img.DrawLine(Top.x - ((containerWidth - spacing) / 2) - 1, Top.y, Top.x - ((containerWidth - spacing) / 2) - 1, frame.Bottom.y, COLOR_BLUE);
+        img.DrawLine(Top.x + ((containerWidth - spacing) / 2) - 1, Top.y, Top.x + ((containerWidth - spacing) / 2) - 1, frame.Bottom.y, COLOR_BLUE);
+
+        img.FillRectangle(Top.x - ((containerWidth - spacing) / 2) - 1, frame.Bottom.y, Top.x + ((containerWidth - spacing) / 2) - 1, Top.y, COLOR_GREEN);
+    }
+	
+    void Charts::DrawTowerChart(const std::vector<DataNode>& data_nodes)
     {
         if (data_nodes.empty())
             return;
-    	
-        int64_t maxHeight = frame.Top.y;
-        int64_t width = frame.GetDistance(frame.BottomLeft, frame.BottomRight);        
 
-    	if(data_nodes.size() == 1)
-    	{
-            img.DrawRectangle(frame.BottomLeft.x + ceil(width/4), frame.Bottom.y, frame.TopRight.x - ceil(width/4), maxHeight + frame.Spacing.y, data_nodes[0].fillColor, 1, true, img.GetBGColor());
-    	}
-        else if(data_nodes.size() > 1 && data_nodes.size() < 4){}
-        else{}
+        int64_t maxHeight = img.h() - frame.Top.y + frame.Spacing.y;
+        int64_t containerWidth = ceil(frame.GetDistance(frame.BottomLeft, frame.BottomRight) / data_nodes.size());
+
+        Point containerCenter = Point{ frame.BottomLeft.x + containerWidth/2, frame.BottomLeft.y};
+
+        for (DataNode node : data_nodes) {
+            containerCenter.y = GetPositionByPercent(node.percent, maxHeight);
+            DrawTower(containerCenter, containerWidth);
+            containerCenter.x += containerWidth+1.5;
+            //img.DrawLine(pointCenter.x, pointCenter.y, pointCenter.x + partialPoint, GetPositionByPercent(node.percent, maxHeight), COLOR_RED);
+        }
     }
 
     void Charts::DrawRectangleByLines(const Point& TopLeft, const Point& BottomRight, const RGBColor& outlineColor) {
@@ -320,9 +335,9 @@ namespace _GraphicalCharts
         Point pointCenter = frame.BottomLeft;
 
         for (DataNode node : data_nodes) {
-            img.DrawCircle(pointCenter.x, pointCenter.y, 4, COLOR_BLUE_LIGHT);
             img.DrawLine(pointCenter.x, pointCenter.y, pointCenter.x + partialPoint, GetPositionByPercent(node.percent, maxHeight), COLOR_RED);
-            pointCenter.x += partialPoint;
+            img.DrawCircle(pointCenter.x, pointCenter.y, 4, COLOR_BLUE_LIGHT);
+        	pointCenter.x += partialPoint;
             pointCenter.y = GetPositionByPercent(node.percent, maxHeight);
             img.DrawCircle(pointCenter.x, pointCenter.y, 4, COLOR_BLUE_LIGHT);
         }
