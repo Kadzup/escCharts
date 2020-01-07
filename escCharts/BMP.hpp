@@ -63,7 +63,7 @@ namespace _BMP
 
     	bool IsEmpty()
     	{
-            return (r && g && b);
+            return !(r && g && b);
     	}
 
         inline bool operator == (const RGBColor& in) { return (r == in.r) && (g == in.g) && (b == in.b); }
