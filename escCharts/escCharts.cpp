@@ -9,17 +9,16 @@ using namespace _GraphicalCharts;
 int main()
 {
 	std::vector<DataNode> node;
-	DataNode n = DataNode{ "test", 5, {100,0,68},10 };
-	n.GenerateColor();
+	DataNode n = DataNode{ "test", 5, {100,0,68},5 };
 	node.push_back(n);
-	node.push_back(DataNode{ "test", 5, {100,0,68}, 5 });
+	node.push_back(DataNode{ "test", 5, {100,0,68}, 50 });
 	node.push_back(DataNode{ "test", 5, {100,0,68}, 6 });
 	node.push_back(DataNode{ "test", 5, {100,0,68},4 });
 	node.push_back(DataNode{ "test", 5, {100,0,68},15 });
 	node.push_back(DataNode{ "test", 5, {100,0,68}, 13 });
 	node.push_back(DataNode{ "test", 5, {100,0,68}, 7 });
-	node.push_back(DataNode{ "test", 5, {100,0,68}, 22 });
-	node.push_back(DataNode{ "test", 5, {100,0,68}, 18 });
+	/*node.push_back(DataNode{ "test", 5, {100,0,68}, 22 });
+	node.push_back(DataNode{ "test", 5, {100,0,68}, 18 });*/
     string pathName = "out/";
 	
     Image img(720, 480, pathName + "sample1.bmp", COLOR_WHITE);
@@ -31,6 +30,8 @@ int main()
 	chart.ShowFrame();
 	chart.ShowFrameCorners();
 	chart.DrawTowerChart(node);
+	chart2.ShowFrame();
+	chart2.ShowXY();
 	chart2.DrawLineChart(node);
 	chart.ShowFrame();
 	chart.ShowFrameCorners();

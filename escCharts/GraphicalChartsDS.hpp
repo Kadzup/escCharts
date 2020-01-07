@@ -33,20 +33,9 @@ namespace _GraphicalCharts
         int64_t percent;
         double value;
         RGBColor fillColor;
-
-        void GenerateColor();
     };
 
-    void DataNode::GenerateColor()
-    {
-        srand(time(NULL));
-        uint8_t r = rand() % 255 + 1, g = rand() % 255 + 1, b = rand() % 255 + 1;
-
-        RGBColor newColor = {r, g ,b};
-
-        if (this->fillColor != newColor)
-            this->fillColor = newColor;
-    }
+    
 
     class TableNode
     {
@@ -202,19 +191,28 @@ namespace _GraphicalCharts
     {
     public:
         ~Charts() {};
-        Charts() : img(Image(256, 256)), frame(img) {};
-        Charts(Image& _img) : img(_img), frame(_img) {};
-        Charts(Image& _img, Frame _frame) : img(_img), frame(_frame){};
+        Charts() : img(Image(256, 256)), frame(img), isVisible(false) {};
+        Charts(Image& _img) : img(_img), frame(_img), isVisible(false) {};
+        Charts(Image& _img, Frame _frame) : img(_img), frame(_frame), isVisible(false) {};
+        Charts(Image& _img, Frame _frame, bool _isVisible) : img(_img), frame(_frame), isVisible(_isVisible) {};
     	
     private:
         std::vector<int64_t> data;
         void DrawTower(const Point& Top, const int64_t& containerWidth, int64_t spacing);
         void DrawRectangleByLines(const Point& TopLeft, const Point& BottomRight, const RGBColor& outlineColor);
         int64_t GetPositionByPercent(const double& value, const int64_t& maxHeight);
+    	RGBColor GenerateColor()
+        {
+            srand(time(NULL));
+            uint8_t r = rand() % 255 + 1, g = rand() % 255 + 1, b = rand() % 255 + 1;
+
+            return RGBColor{ r, g ,b };
+        }
     	
     public:
         void ShowFrame(const bool& show);
         void ShowFrameCorners(const bool& show);
+        void ShowXY(const bool& show);
     	
         void DrawTowerChart(const std::vector<DataNode>& data_nodes);
         void DrawLineChart(const std::vector<DataNode>& data_nodes);
@@ -225,11 +223,37 @@ namespace _GraphicalCharts
         Image img;
 
         inline void Update() { this->img.Write(); }
+    private:
+        bool isVisible;
     };
 
-    void Charts::ShowFrame(const bool& show = true)
+    void Charts::ShowXY(const bool& show = true)
     {
 	    if(show)
+	    {
+            RGBColor lineColor = GenerateColor();
+            img.DrawLine(frame.TopLeft.x, frame.TopLeft.y, frame.TopLeft.x + 6, frame.TopLeft.y + 10, lineColor);
+            img.DrawLine(frame.TopLeft.x, frame.TopLeft.y, frame.TopLeft.x - 6, frame.TopLeft.y + 10, lineColor);
+	    	
+            img.DrawLine(frame.TopLeft.x, frame.TopLeft.y, frame.BottomLeft.x, frame.BottomLeft.y, lineColor);
+            img.DrawLine(frame.BottomLeft.x, frame.BottomLeft.y, frame.BottomRight.x, frame.BottomRight.y, lineColor);
+
+            img.DrawLine(frame.BottomRight.x, frame.BottomRight.y, frame.BottomRight.x - 10, frame.BottomRight.y + 6, lineColor);
+            img.DrawLine(frame.BottomRight.x, frame.BottomRight.y, frame.BottomRight.x - 10, frame.BottomRight.y - 6, lineColor);
+	    }
+        else
+        {
+            img.DrawLine(frame.TopLeft.x, frame.TopLeft.y, frame.BottomLeft.x, frame.BottomLeft.y, img.GetBGColor());
+            img.DrawLine(frame.BottomLeft.x, frame.BottomLeft.y, frame.BottomRight.x, frame.BottomRight.y, img.GetBGColor());
+        }
+    }
+	
+    void Charts::ShowFrame(const bool& show = true)
+    {
+        if (isVisible != show)
+            isVisible = !isVisible;
+    	
+	    if(isVisible)
 	    {
             RGBColor outlineColor;
             if (img.GetBGColor() == COLOR_BLACK)
@@ -247,7 +271,7 @@ namespace _GraphicalCharts
     }
 
     void Charts::ShowFrameCorners(const bool& show = true)
-    {
+    {    	
 	    if(show)
 	    {
             RGBColor outlineColor;
@@ -288,12 +312,15 @@ namespace _GraphicalCharts
     {
         assert(Top.x >= 0 and Top.y >= 0 and Top.x < img.w() and Top.y < img.h());
         assert(containerWidth > 0);
+
+        Point LT = Point{ Top.x - ((containerWidth - spacing) / 2), Top.y},
+    		  RB = Point{ Top.x + ((containerWidth - spacing) / 2), frame.Bottom.y };
     	
-        img.DrawLine(Top.x - ((containerWidth - spacing) / 2) - 1, Top.y, Top.x + ((containerWidth - spacing) / 2) - 1, Top.y, COLOR_BLUE);
-        img.DrawLine(Top.x - ((containerWidth - spacing) / 2) - 1, Top.y, Top.x - ((containerWidth - spacing) / 2) - 1, frame.Bottom.y, COLOR_BLUE);
+        img.DrawLine(Top.x - ((containerWidth - spacing) / 2) + 1, Top.y, Top.x + ((containerWidth - spacing) / 2) - 1, Top.y, COLOR_BLUE);
+        img.DrawLine(Top.x - ((containerWidth - spacing) / 2) + 1, Top.y, Top.x - ((containerWidth - spacing) / 2) + 1, frame.Bottom.y, COLOR_BLUE);
         img.DrawLine(Top.x + ((containerWidth - spacing) / 2) - 1, Top.y, Top.x + ((containerWidth - spacing) / 2) - 1, frame.Bottom.y, COLOR_BLUE);
 
-        img.FillRectangle(Top.x - ((containerWidth - spacing) / 2) - 1, frame.Bottom.y, Top.x + ((containerWidth - spacing) / 2) - 1, Top.y, COLOR_GREEN);
+        img.FillRectangle(LT.x,LT.y, RB.x, RB.y, GenerateColor());
     }
 	
     void Charts::DrawTowerChart(const std::vector<DataNode>& data_nodes)
@@ -309,7 +336,7 @@ namespace _GraphicalCharts
         for (DataNode node : data_nodes) {
             containerCenter.y = GetPositionByPercent(node.percent, maxHeight);
             DrawTower(containerCenter, containerWidth);
-            containerCenter.x += containerWidth+1.5;
+            containerCenter.x += containerWidth;
             //img.DrawLine(pointCenter.x, pointCenter.y, pointCenter.x + partialPoint, GetPositionByPercent(node.percent, maxHeight), COLOR_RED);
         }
     }
@@ -322,7 +349,7 @@ namespace _GraphicalCharts
     }
 
     int64_t Charts::GetPositionByPercent(const double& value, const int64_t& maxHeight) {
-        return ceil((value * maxHeight) / 100);
+        return maxHeight - ceil((value * maxHeight) / 100);
     }
 
     void Charts::DrawLineChart(const std::vector<DataNode>& data_nodes) {
@@ -333,9 +360,10 @@ namespace _GraphicalCharts
         int64_t partialPoint = ceil(frame.GetDistance(frame.BottomLeft, frame.BottomRight) / data_nodes.size());
 
         Point pointCenter = frame.BottomLeft;
-
+        RGBColor lineColor = GenerateColor();
+    	
         for (DataNode node : data_nodes) {
-            img.DrawLine(pointCenter.x, pointCenter.y, pointCenter.x + partialPoint, GetPositionByPercent(node.percent, maxHeight), COLOR_RED);
+            img.DrawLine(pointCenter.x, pointCenter.y, pointCenter.x + partialPoint, GetPositionByPercent(node.percent, maxHeight), lineColor);
             img.DrawCircle(pointCenter.x, pointCenter.y, 4, COLOR_BLUE_LIGHT);
         	pointCenter.x += partialPoint;
             pointCenter.y = GetPositionByPercent(node.percent, maxHeight);

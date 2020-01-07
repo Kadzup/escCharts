@@ -431,15 +431,11 @@ namespace _BMP
 	
     void Image::FillRectangle(int64_t x1, int64_t y1, int64_t x2, int64_t y2, const RGBColor& fillColor)
     {
-	    while(x1 < x2 && y1  != y2)
-	    {
+	    while(y1 != y2)
+	    {	    	
             DrawLine(x1, y1, x2, y1, fillColor);
-            DrawLine(x2, y1, x2, y2, fillColor);
-            DrawLine(x2, y2, x1, y2, fillColor);
-            DrawLine(x1, y2, x1, y1, fillColor);
 
-	    	x1++; x2--;
-            y1++; y2--;
+	    	y1++;
 	    }
 
     }

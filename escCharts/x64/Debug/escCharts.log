@@ -2,17 +2,16 @@
 E:\Programming\CPP\escCharts\escCharts\BMP.hpp(267,43): warning C4305: +=: усечение из "double" в "float"
 E:\Programming\CPP\escCharts\escCharts\BMP.hpp(278,35): warning C4244: аргумент: преобразование "float" в "int64_t", возможна потеря данных
 E:\Programming\CPP\escCharts\escCharts\BMP.hpp(278,26): warning C4244: аргумент: преобразование "float" в "int64_t", возможна потеря данных
-E:\Programming\CPP\escCharts\escCharts\BMP.hpp(479,49): warning C4244: =: преобразование "int64_t" в "int", возможна потеря данных
-E:\Programming\CPP\escCharts\escCharts\BMP.hpp(488,22): warning C4244: =: преобразование "int64_t" в "unsigned int", возможна потеря данных
-E:\Programming\CPP\escCharts\escCharts\BMP.hpp(489,22): warning C4244: =: преобразование "int64_t" в "unsigned int", возможна потеря данных
-E:\Programming\CPP\escCharts\escCharts\BMP.hpp(531,17): warning C4101: colorBuffer: неиспользованная локальная переменная
-E:\Programming\CPP\escCharts\escCharts\GraphicalChartsDS.hpp(42,19): warning C4244: аргумент: преобразование "time_t" в "unsigned int", возможна потеря данных
-E:\Programming\CPP\escCharts\escCharts\GraphicalChartsDS.hpp(174,24): warning C4244: return: преобразование "double" в "int64_t", возможна потеря данных
-E:\Programming\CPP\escCharts\escCharts\GraphicalChartsDS.hpp(305,32): warning C4244: инициализация: преобразование "double" в "int64_t", возможна потеря данных
-E:\Programming\CPP\escCharts\escCharts\GraphicalChartsDS.hpp(310,58): warning C4244: аргумент: преобразование "int64_t" в "const double", возможна потеря данных
-E:\Programming\CPP\escCharts\escCharts\GraphicalChartsDS.hpp(312,52): warning C4244: +=: преобразование "double" в "int64_t", возможна потеря данных
-E:\Programming\CPP\escCharts\escCharts\GraphicalChartsDS.hpp(325,20): warning C4244: return: преобразование "double" в "int64_t", возможна потеря данных
-E:\Programming\CPP\escCharts\escCharts\GraphicalChartsDS.hpp(333,30): warning C4244: инициализация: преобразование "double" в "int64_t", возможна потеря данных
-E:\Programming\CPP\escCharts\escCharts\GraphicalChartsDS.hpp(338,111): warning C4244: аргумент: преобразование "int64_t" в "const double", возможна потеря данных
-E:\Programming\CPP\escCharts\escCharts\GraphicalChartsDS.hpp(341,54): warning C4244: аргумент: преобразование "int64_t" в "const double", возможна потеря данных
+E:\Programming\CPP\escCharts\escCharts\BMP.hpp(475,49): warning C4244: =: преобразование "int64_t" в "int", возможна потеря данных
+E:\Programming\CPP\escCharts\escCharts\BMP.hpp(484,22): warning C4244: =: преобразование "int64_t" в "unsigned int", возможна потеря данных
+E:\Programming\CPP\escCharts\escCharts\BMP.hpp(485,22): warning C4244: =: преобразование "int64_t" в "unsigned int", возможна потеря данных
+E:\Programming\CPP\escCharts\escCharts\BMP.hpp(527,17): warning C4101: colorBuffer: неиспользованная локальная переменная
+E:\Programming\CPP\escCharts\escCharts\GraphicalChartsDS.hpp(163,24): warning C4244: return: преобразование "double" в "int64_t", возможна потеря данных
+E:\Programming\CPP\escCharts\escCharts\GraphicalChartsDS.hpp(206,23): warning C4244: аргумент: преобразование "time_t" в "unsigned int", возможна потеря данных
+E:\Programming\CPP\escCharts\escCharts\GraphicalChartsDS.hpp(332,32): warning C4244: инициализация: преобразование "double" в "int64_t", возможна потеря данных
+E:\Programming\CPP\escCharts\escCharts\GraphicalChartsDS.hpp(337,58): warning C4244: аргумент: преобразование "int64_t" в "const double", возможна потеря данных
+E:\Programming\CPP\escCharts\escCharts\GraphicalChartsDS.hpp(352,26): warning C4244: return: преобразование "double" в "int64_t", возможна потеря данных
+E:\Programming\CPP\escCharts\escCharts\GraphicalChartsDS.hpp(360,30): warning C4244: инициализация: преобразование "double" в "int64_t", возможна потеря данных
+E:\Programming\CPP\escCharts\escCharts\GraphicalChartsDS.hpp(366,111): warning C4244: аргумент: преобразование "int64_t" в "const double", возможна потеря данных
+E:\Programming\CPP\escCharts\escCharts\GraphicalChartsDS.hpp(369,54): warning C4244: аргумент: преобразование "int64_t" в "const double", возможна потеря данных
   escCharts.vcxproj -> E:\Programming\CPP\escCharts\x64\Debug\escCharts.exe
