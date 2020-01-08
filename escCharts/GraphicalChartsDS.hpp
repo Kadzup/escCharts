@@ -9,6 +9,9 @@
 #include <vector>
 #include <string>
 #include <sstream>
+#include <windows.graphics.h>
+
+#define M_PI 3.141592653589793238462643383279502884
 
 namespace _GraphicalCharts
 {
@@ -210,20 +213,19 @@ namespace _GraphicalCharts
         std::vector<int64_t> data;
         void DrawTower(const Point& Top, const int64_t& containerWidth, int64_t spacing);
         void DrawRectangleByLines(const Point& TopLeft, const Point& BottomRight, const RGBColor& outlineColor);
+        void DrawCircleSelection(const Point& Center, const uint64_t& radius, const double& angleBegin, const double& angleEnd, const RGBColor& fillColor);
         int64_t GetPositionByPercent(const double& value, const int64_t& maxHeight);
         double GetAngleByPercent(const double& value);
+    	inline double GetRadians(const double& angle){ return angle * M_PI / 180.0; }
 
     	RGBColor GenerateColor(const uint64_t& seed)
         {
             srand( seed );
     		
             uint8_t r = rand() % 255 + 1, g = rand() % 255 + 1, b = rand() % 255 + 1;
-
-            std::cout << "R:" << r << " G:" << g << " B:" << b << std::endl;
     		
             return RGBColor{ r, g ,b };
         }
-
         uint64_t GenerateSeed()
     	{
             srand(time(NULL));
@@ -243,7 +245,7 @@ namespace _GraphicalCharts
                 dist += frame.GetDistance(frame.TopRight, frame.Left) * 5;
             else if (rand() % 10 + 1 == 4)
                 dist += frame.GetDistance(frame.Right, frame.BottomLeft) * 5;
-            else if (rand() % 10 + 1 == 5)
+            else if (rand() % 10 + 1 >= 5)
                 dist += frame.GetDistance(frame.BottomRight, frame.Top) * 5;
     		
             return img.w() * img.h() + time(NULL) * tm_local->tm_sec + tm_local->tm_hour * tm_local->tm_year + dist;
@@ -265,6 +267,7 @@ namespace _GraphicalCharts
         Image img;
 
         inline void Update() { this->img.Write(); }
+    	
     private:
         bool isVisible;
     };
@@ -426,6 +429,17 @@ namespace _GraphicalCharts
         return (value * 360) / 100;
     }
 
+    void Charts::DrawCircleSelection(const Point& Center, const uint64_t& radius, const double& angleBegin, const double& angleEnd, const RGBColor& fillColor)
+    {
+    	
+        std::cout << "B: " << angleBegin << " E: " << angleEnd << std::endl;
+	   for(double i = GetRadians(angleBegin); i <= GetRadians(angleEnd); i+=0.00001)
+	    {
+            img.DrawLine(Center.x, Center.y, Center.x + (radius - 5) * cos(i), Center.y + (radius - 5) * sin(i), GenerateColor(angleBegin+angleEnd));
+	    }
+        std::cout << "B: " << angleBegin << " E: " << angleEnd << std::endl;
+    }
+	
 	void Charts::SplitCircle(const std::vector<DataNode>& data_nodes)
     {
         if (data_nodes.empty())
@@ -440,15 +454,18 @@ namespace _GraphicalCharts
 
         img.DrawCircle(center.x, center.y, radius, lineColor, 5, false);
 
-        double sum = 0;
-    	
+        double angleBegin = 0, angleEnd = 0;
+        int i = 0;
         for (DataNode node : data_nodes) {
-        	//(x2,y2) = (x1 + line_length*cos(angle),y1 + line_length*sin(angle))
-            img.DrawLine(center.x, center.y, center.x + (radius-5) * cos(GetAngleByPercent(node.percent)), center.y + (radius-5) * sin(GetAngleByPercent(node.percent)), COLOR_BLUE);
-            sum += GetAngleByPercent(node.percent);
-            std::cout << GetAngleByPercent(node.percent) << std::endl;
+        	angleEnd = angleBegin + GetAngleByPercent(node.percent);
+        
+        	DrawCircleSelection(center, radius, angleBegin, angleEnd, GenerateColor(GetAngleByPercent(angleEnd)));
+
+        	std::cout << std::endl << "Begin: " << angleBegin << " End: " << angleEnd << std::endl;
+            angleBegin = angleEnd;
+            i++;
         }
-        std::cout << std::endl << sum;
+        std::cout << std::endl << angleEnd;
     }
 }
 
