@@ -213,13 +213,41 @@ namespace _GraphicalCharts
         int64_t GetPositionByPercent(const double& value, const int64_t& maxHeight);
         double GetAngleByPercent(const double& value);
 
-    	RGBColor GenerateColor()
+    	RGBColor GenerateColor(const uint64_t& seed)
         {
-            srand(time(NULL));
+            srand( seed );
+    		
             uint8_t r = rand() % 255 + 1, g = rand() % 255 + 1, b = rand() % 255 + 1;
 
+            std::cout << "R:" << r << " G:" << g << " B:" << b << std::endl;
+    		
             return RGBColor{ r, g ,b };
         }
+
+        uint64_t GenerateSeed()
+    	{
+            srand(time(NULL));
+    		
+            time_t curr_time;
+            curr_time = time(NULL);
+
+            tm* tm_local = localtime(&curr_time);
+
+            uint32_t dist = curr_time;
+    		
+    		if (rand() % 10 + 1 == 1)
+                dist += frame.GetDistance(frame.TopLeft, frame.BottomRight) * 5;
+            else if (rand() % 10 + 1 == 2)
+                dist += frame.GetDistance(frame.Top, frame.Bottom) * 5;
+    		else if (rand() % 10 + 1 == 3)
+                dist += frame.GetDistance(frame.TopRight, frame.Left) * 5;
+            else if (rand() % 10 + 1 == 4)
+                dist += frame.GetDistance(frame.Right, frame.BottomLeft) * 5;
+            else if (rand() % 10 + 1 == 5)
+                dist += frame.GetDistance(frame.BottomRight, frame.Top) * 5;
+    		
+            return img.w() * img.h() + time(NULL) * tm_local->tm_sec + tm_local->tm_hour * tm_local->tm_year + dist;
+    	}
     	
     public:
         void ShowFrame(const bool& show);
@@ -247,7 +275,7 @@ namespace _GraphicalCharts
 	    {
             RGBColor lineColor;
 	    	if(frame.GetXYColor().IsEmpty())
-                lineColor = GenerateColor();
+                lineColor = GenerateColor(GenerateSeed());
             else
                 lineColor = frame.GetXYColor();
 	    	
@@ -341,7 +369,7 @@ namespace _GraphicalCharts
         img.DrawLine(Top.x - ((containerWidth - spacing) / 2) + 1, Top.y, Top.x - ((containerWidth - spacing) / 2) + 1, frame.Bottom.y, COLOR_BLUE);
         img.DrawLine(Top.x + ((containerWidth - spacing) / 2) - 1, Top.y, Top.x + ((containerWidth - spacing) / 2) - 1, frame.Bottom.y, COLOR_BLUE);
 
-        img.FillRectangle(LT.x,LT.y, RB.x, RB.y, GenerateColor());
+        img.FillRectangle(LT.x,LT.y, RB.x, RB.y, GenerateColor(frame.GetDistance(Top, frame.Bottom) + frame.GetDistance( {Top.x - ((containerWidth - spacing) / 2) + 1, Top.y }, { Top.x + ((containerWidth - spacing) / 2) - 1, frame.Bottom.y } )));
     }
 	
     void Charts::DrawTowerChart(const std::vector<DataNode>& data_nodes)
@@ -370,7 +398,7 @@ namespace _GraphicalCharts
         int64_t partialPoint = ceil(frame.GetDistance(frame.BottomLeft, frame.BottomRight) / data_nodes.size());
 
         Point pointCenter = frame.BottomLeft;
-        RGBColor lineColor = GenerateColor();
+        RGBColor lineColor = GenerateColor(GenerateSeed());
 
         for (DataNode node : data_nodes) {
             img.DrawLine(pointCenter.x, pointCenter.y, pointCenter.x + partialPoint, GetPositionByPercent(node.percent, maxHeight), lineColor);
